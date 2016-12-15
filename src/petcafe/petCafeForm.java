@@ -1074,11 +1074,20 @@ public class petCafeForm extends javax.swing.JFrame {
         // TODO add your handling code here:
         String ownerName=this.OwnerNameField.getText();
         String ownerMobile=this.MobileField.getText();
-        Owner owner=new Owner();
+        String employeeId=this.EmployeeIDField1.getText();
+        Employee employee=new Employee(employeeId);
+        Owner owner=new Owner(ownerName,ownerMobile);
+        if(owner.getOwnerName().equals("")|| owner.getOwnerMobile().equals("")){
+            JOptionPane.showMessageDialog(this, "Please insert all clint information!",
+                    "Error", JOptionPane.ERROR_MESSAGE);
+        }
+        else{
+        owner.saveOwnerInfo();
+        }
         String petName=this.PetNameField.getText();
         String petType;
-        
         Pet pet=new Pet();
+        
         
         
     }//GEN-LAST:event_submitButtonActionPerformed

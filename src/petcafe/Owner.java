@@ -8,6 +8,7 @@ package petcafe;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.Random;
 import java.util.Vector;
 
 /**
@@ -19,6 +20,7 @@ public class Owner {
     protected String ownerID;
     protected String ownerName;
     protected String ownerMobile;
+    protected Employee rEmplyeeId;
     Vector<Pet> myPets;
 
     /*public Employee employeeName;
@@ -34,13 +36,17 @@ public class Owner {
         this.ownerMobile = mobile;
         this.myPets = pets;
     }
-
-    public void setOwnerName(String name) {
-        this.ownerName = name;
+    public Owner(String name,String mobile){
+        this.ownerName=name;
+        this.ownerMobile=mobile;
+        
     }
 
-    public void setOwnerID(String id) {
-        this.ownerID = id;
+    public void setOwnetId(String id){
+        this.ownerID=id;
+    }
+    public void setOwnerName(String name) {
+        this.ownerName = name;
     }
 
     public void setOwnerMobile(String mobile) {
@@ -49,6 +55,9 @@ public class Owner {
 
     public void setMyPets(Vector<Pet> pets) {
         this.myPets = pets;
+    }
+    public void setREmolyeeId(Employee id){
+        this.rEmplyeeId=id;
     }
 
     /*
@@ -71,76 +80,26 @@ public class Owner {
     public String getOwnerMobile() {
         return this.ownerMobile;
     }
+    public Employee getREmployeeId(){
+        return this.rEmplyeeId;
+    }
 
     public Vector<Pet> getMyPets() {
         return this.myPets;
     }
 
-    /* 
-    public Employee getEmployeeName(){
-        return this.employeeName;
-    }
-    public Employee getEmployeeID(){
-        return this.employeeID;
-    }*/
     public void addPet(Pet myPet) {// add to the list
         myPets.add(myPet);
     }
-
-    public boolean checkClintName(String name) {//check tha name
-        return this.ownerName.equals(name);
-    }
-
-    private boolean isValidMobile(String mobile) {
-
-        if (mobile.length() > 0 && mobile.length() < 13) {
-            int firstIndex = 0;
-            if (mobile.charAt(0) == '+' && mobile.charAt(1) == '9' && mobile.charAt(2) == '6' && mobile.charAt(3) == '6') {
-                firstIndex = 4;
-            }
-            for (int i = firstIndex; i < mobile.length(); i++) {
-                if (!Character.isDigit(mobile.charAt(i))) {
-                    return false;
-                }
-            }
-        }
-        return true;
-    }
-
-    public void saveOwnerInfo() {
-        Connection con = null;
-        PreparedStatement ps = null;
-        try {
-            con = DBManager.getConnection();
-            String insert = "INSERT INTO `owner_info` (`Owner_ID`,`Owner_name`,`Owner_mobile`)"
-                    + "VALUES(?,?,?)";
-            ps = con.prepareStatement(insert);
-            ps.setString(1, this.ownerID);
-            ps.setString(2, this.ownerName);
-            ps.setString(3, this.ownerMobile);
-
-            int result = ps.executeUpdate();
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            if (ps != null) {
-                try {
-                    ps.close();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-            if (con != null) {
-                try {
-                    con.close();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-
-        }
-
+  
+      public String setOwnerID(){
+        Random randomNum = new Random();
+        int maxId=500;
+        int minId=1;
+        int rangeOfId = maxId- minId + 1;
+        int ownerId =  randomNum.nextInt(rangeOfId) + minId;
+        this.ownerID = "CL0"+ownerId;
+           return ownerID;     
     }
 
     public boolean isOwnerExist(String mobile) {
@@ -177,6 +136,44 @@ public class Owner {
             }
         }
         return exist;
+    }
+
+    public void saveOwnerInfo() {
+        Connection con = null;
+        PreparedStatement ps = null;
+        try {
+            con = DBManager.getConnection();
+            String insert = "INSERT INTO `owner_info` (`Owner_ID`,`Owner_name`,`Owner_mobile`)"
+                    + "VALUES(?,?,?,?)";
+            ps = con.prepareStatement(insert);
+            ps.setString(1, this.setOwnerID());
+            ps.setString(2, this.ownerName);
+            ps.setString(3, this.ownerMobile);
+           
+            
+
+            int result = ps.executeUpdate();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (ps != null) {
+                try {
+                    ps.close();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+            if (con != null) {
+                try {
+                    con.close();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+
+        }
+
     }
 
     public void deletOwner(String name, String mobile) {
@@ -243,6 +240,26 @@ public class Owner {
                 }
             }
         }
+    }
+
+    private boolean isValidMobile(String mobile) {
+
+        if (mobile.length() > 0 && mobile.length() < 13) {
+            int firstIndex = 0;
+            if (mobile.charAt(0) == '+' && mobile.charAt(1) == '9' && mobile.charAt(2) == '6' && mobile.charAt(3) == '6') {
+                firstIndex = 4;
+            }
+            for (int i = firstIndex; i < mobile.length(); i++) {
+                if (!Character.isDigit(mobile.charAt(i))) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    public boolean checkClintName(String name) {//check tha name
+        return this.ownerName.equals(name);
     }
 
 }
